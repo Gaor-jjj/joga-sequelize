@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Authors.init({
+  Author.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Authors',
+    modelName: 'Author',
   });
   return Author;
 };
