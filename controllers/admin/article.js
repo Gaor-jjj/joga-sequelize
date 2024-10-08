@@ -38,7 +38,7 @@ const updateArticle = async (req, res) => {
             }
             return res.status(200).json({ article })
         } catch (error) {
-            return res.status(500).send({ error: 'Error fetching article'})
+            return res.status(500).send(error.message)
         }
     }
 
@@ -50,10 +50,30 @@ const updateArticle = async (req, res) => {
                 { name, slug, image, body, author_id },
                 { where: { id: articleId }}
             )
+
+            if (updatedArticle[0] === 0) {
+                return res.status(404).json({ message: 'Article not found or no changes made.' });
+            }
             
             return res.status(200).json({ message: 'Article updated successfully'})
         } catch (error) {
-            return res.status(500).json({ error: 'Error updating article'})
+            return res.status(500).send(error.message)
+        }
+    }
+
+    if (req.method === 'DELETE') {
+        try {
+            const deletedArticle = await models.Article.destroy({
+                where: { id: articleId }
+            })
+
+            if (deletedArticle === 0) {
+                return res.status(404).json({ message: 'Article not found.' });
+            }
+
+            return res.status(200).json({ message: 'Article deleted successfully'})
+        } catch (error) {
+            return res.status(500).send(error.message)
         }
     }
 }
