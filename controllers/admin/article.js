@@ -27,7 +27,38 @@ const createArticle = (req, res) => {
         return res.status(500).send(error.message);
     })
 }
+const updateArticle = async (req, res) => {
+    const articleId = req.params.id;
+
+    if (req.method === 'GET') {
+        try {
+            const article = await models.Article.findByPk(articleId);
+            if (!article) {
+                return res.status(404).send({ message: 'Article not found'})
+            }
+            return res.status(200).json({ article })
+        } catch (error) {
+            return res.status(500).send({ error: 'Error fetching article'})
+        }
+    }
+
+    if (req.method === 'POST') {
+        let { name, slug, image, body, author_id } = req.body;
+
+        try {
+            const updatedArticle = await models.Article.update(
+                { name, slug, image, body, author_id },
+                { where: { id: articleId }}
+            )
+            
+            return res.status(200).json({ message: 'Article updated successfully'})
+        } catch (error) {
+            return res.status(500).json({ error: 'Error updating article'})
+        }
+    }
+}
 
 module.exports = {
-    createArticle
+    createArticle,
+    updateArticle
 }
